@@ -3,41 +3,42 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 interface ThemeContextType {
-  model: string;
+  mode: string;
   setMode: (mode: string) => void;
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+const themeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState("");
 
   const handleThemeChange = () => {
-    if (mode === "dark") {
+    if (mode === "light") {
       setMode("light");
       document.documentElement.classList.add("light");
     } else {
       setMode("dark");
-      document.documentElement.classList.remove("dark");
+      document.documentElement.classList.add("dark");
     }
   };
 
   useEffect(() => {
     handleThemeChange();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
 
   return (
-    <ThemeContext.Provider value={{ mode, setMode }}>
+    <themeContext.Provider value={{ mode, setMode }}>
       {children}
-    </ThemeContext.Provider>
+    </themeContext.Provider>
   );
 }
 
 export function useTheme() {
-  const context = useContext(ThemeContext);
+  const context = useContext(themeContext);
 
   if (context === undefined) {
-    throw new Error("useTheme must be used within a themeProvider");
+    throw new Error("useTheme must be used with a ThemeProvider");
   }
 
   return context;
